@@ -1,0 +1,13 @@
+markzz's Minecraft NBT C Library
+================================
+
+This is a library that opens, examines, modifies, and saves NBT data for the
+game Minecraft. This document discusses the basics of the library.
+
+There are two files that should be distributed with this library, the library
+itself and "mcnbt.h". Only data, structures, and functions declared in the
+latter file are available to any linking software and the structures are opaque
+and its elements are to be accessed only through the provided functions.
+
+Generally, functions are named in the format "nbt_<type>_<action>" (example
+nbt_tree_get_name). Internal functions are given a prepended underscore (_).
