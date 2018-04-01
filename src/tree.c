@@ -116,8 +116,8 @@ nbt_node_t *nbt_tree_initialize_len(nbt_tag_type_t type, const char *name, void 
             ret->len = data_size;
             break;
         case MCNBT_TAG_STRING:
-            ret->data.str = (char *) calloc(data_size, sizeof(char));
-            strncpy(ret->data.str, (char *) data, data_size);
+            ret->data.str = (char *) calloc(strlen(data) + 1, sizeof(char));
+            strncpy(ret->data.str, (char *) data, strlen(data) + 1);
             ret->len = strlen(ret->data.str);
             break;
         case MCNBT_TAG_LIST:

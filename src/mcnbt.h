@@ -121,7 +121,7 @@ int nbt_tree_replace(nbt_node_t *old, nbt_node_t *new);
 
 size_t nbt_tree_get_len(nbt_node_t *node);
 
-char *_serialize_numerical_value(void *num, size_t bytes);
+char *_serialize_string(nbt_node_t *node, size_t *len);
 
 #ifdef __cplusplus
 }

@@ -19,13 +19,15 @@
 #ifndef LIBMCNBT_UTIL_H
 #define LIBMCNBT_UTIL_H
 
+void _mcnbt_alloc_fail(size_t size);
+
+#define MALLOC(p, s, action) do { p = malloc(s); if (p == NULL) { _mcnbt_alloc_fail(s); action; } } while(0)
+#define CALLOC(p, l, s, action) do { p = calloc(l, s); if(p == NULL) { _mcnbt_alloc_fail(l * s); action; } } while(0)
+
 #define FREE(p) do { free(p); p = NULL; } while(0)
 
 #define ASSERT(cond, action) do { if(!(cond)) { action; } } while(0)
 
-char *base10_to_binary(int i, int bits);
-char *base10_double_to_binary(double d);
-
-float bit_string_to_float(const char *bits);
+void *_mcnbt_memcat(void *dest, const void *src, size_t n, int pos);
 
 #endif //LIBMCNBT_UTIL_H

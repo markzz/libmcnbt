@@ -16,26 +16,24 @@
  *  License along with this library; if not see <http://www.gnu.org/licenses/>.
  */
 
+#include <string.h>
 #include <malloc.h>
 #include <math.h>
 #include "util.h"
 
-char *base10_to_binary(int i, int bits) {
-    int j;
-    char *ret = (char*)malloc(sizeof(char) * bits);
-
-    for (j = bits; j >= 0; j--) {
-        *(ret+(bits-j)) = (char)(i >= 1 << j ? 1 : 0);
-        i -= i >= 1 << j ? 1 << j : 0;
-    }
-
-    return ret;
+void _mcnbt_alloc_fail(size_t size) {
+    fprintf(stderr, "allocation failure: could not allocate %zu bytes\n", size);
 }
 
-float bit_string_to_float(const char *bits) {
-    int sign;
-    int exp;
-
-    sign = bits[0] ? -1 : 1;
-
+/** Concatenates memory to a certain position
+ * @param dest Destination pointer
+ * @param src Source pointer
+ * @param n Number of bytes to copy
+ * @param pos Starting position in dest
+ * @return Destination pointer
+ */
+void *_mcnbt_memcat(void *dest, const void *src, size_t n, int pos) {
+    void *start_ptr = dest + pos;
+    memcpy(start_ptr, src, n);
+    return dest;
 }
