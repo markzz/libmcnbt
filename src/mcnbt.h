@@ -98,7 +98,7 @@ int nbt_node_replace(nbt_node_t *old, nbt_node_t *new);
 
 size_t nbt_node_get_len(nbt_node_t *node);
 
-char *_serialize_compound(nbt_node_t *node, size_t *len);
+char *serialize_tree(nbt_node_t *node, size_t *len);
 
 #ifdef __cplusplus
 }

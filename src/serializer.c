@@ -404,9 +404,9 @@ static char *_serialize_string(nbt_node_t *node, size_t *len) {
     return ret;
 }
 
-char *_serialize_compound(nbt_node_t *node, size_t *len);
+static char *_serialize_compound(nbt_node_t *node, size_t *len);
 
-char *_serialize_list(nbt_node_t *node, size_t *len) {
+static char *_serialize_list(nbt_node_t *node, size_t *len) {
     ASSERT(node != NULL, return NULL);
     ASSERT(nbt_node_get_type(node) == MCNBT_TAG_LIST, return NULL);
     char *ret = NULL;
@@ -534,7 +534,7 @@ free:
     return ret;
 }
 
-char *_serialize_compound(nbt_node_t *node, size_t *len) {
+static char *_serialize_compound(nbt_node_t *node, size_t *len) {
     ASSERT(node != NULL, return NULL);
     ASSERT(nbt_node_get_type(node) == MCNBT_TAG_COMPOUND, return NULL);
     char *ret = NULL;
@@ -654,4 +654,16 @@ char *_serialize_compound(nbt_node_t *node, size_t *len) {
     }
     FREE(tmp);
     return ret;
+}
+
+char *serialize_tree(nbt_node_t *node, size_t *len) {
+    ASSERT(node != NULL, return NULL);
+
+    if (nbt_node_get_type(node) != MCNBT_TAG_COMPOUND) {
+        fprintf(stderr, "root node must be compound\n");
+        return NULL;
+    }
+
+    *len = 0;
+    return _serialize_compound(node, len);
 }

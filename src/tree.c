@@ -247,8 +247,8 @@ int nbt_node_set_data_int(nbt_node_t *node, int data) {
 }
 
 char *nbt_node_get_data_str(nbt_node_t *node) {
-    ASSERT(node != NULL, return -1);
-    ASSERT(node->type == MCNBT_TAG_STRING || node->type == MCNBT_TAG_BYTE_ARRAY, return -1);
+    ASSERT(node != NULL, return NULL);
+    ASSERT(node->type == MCNBT_TAG_STRING || node->type == MCNBT_TAG_BYTE_ARRAY, return NULL);
     return node->data.str;
 }
 
