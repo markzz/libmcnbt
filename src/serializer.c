@@ -403,6 +403,8 @@ char *_serialize_string(nbt_node_t *node, size_t *len) {
     return ret;
 }
 
+char *_serialize_compound(nbt_node_t *node, size_t *len);
+
 char *_serialize_list(nbt_node_t *node, size_t *len) {
     ASSERT(node != NULL, return NULL);
     ASSERT(nbt_tree_get_type(node) == MCNBT_TAG_LIST, return NULL);
@@ -411,6 +413,11 @@ char *_serialize_list(nbt_node_t *node, size_t *len) {
     char *name_size = NULL;
     size_t l = nbt_tree_get_len(node);
     char *sl = _serialize_numerical_value(&l, 4);
+    char **tmp = NULL;
+    char *t;
+    nbt_node_t *tmpnode;
+    size_t tmplen = 0;
+    size_t content_len = 0;
 
     char *name = nbt_tree_get_name(node);
     size_t name_len;
@@ -425,7 +432,61 @@ char *_serialize_list(nbt_node_t *node, size_t *len) {
         name_size = _serialize_numerical_value(&name_len, 2);
     }
 
+    CALLOC(tmp, l, sizeof(char *), return NULL);
+    tmpnode = nbt_tree_get_first_child(node);
     for (int i = 0; i < l; i++) {
+        if (tmpnode == NULL) {
+            break;
+        }
 
+        switch (nbt_tree_get_type(node)) {
+            case MCNBT_TAG_BYTE:
+                t = _serialize_byte(tmpnode, &tmplen);
+                *(tmp + i) = t;
+                break;
+            case MCNBT_TAG_SHORT:
+                t = _serialize_short(tmpnode, &tmplen);
+                *(tmp + i) = t;
+                break;
+            case MCNBT_TAG_INT:
+                t = _serialize_int(tmpnode, &tmplen);
+                *(tmp + i) = t;
+                break;
+            case MCNBT_TAG_LONG:
+                t = _serialize_long(tmpnode, &tmplen);
+                *(tmp + i) = t;
+                break;
+            case MCNBT_TAG_FLOAT:
+                t = _serialize_float(tmpnode, &tmplen);
+                *(tmp + i) = t;
+                break;
+            case MCNBT_TAG_DOUBLE:
+                t = _serialize_double(tmpnode, &tmplen);
+                *(tmp + i) = t;
+                break;
+            case MCNBT_TAG_BYTE_ARRAY:
+                t = _serialize_byte_array(tmpnode, &tmplen);
+                *(tmp + i) = t;
+                break;
+            case MCNBT_TAG_STRING:
+                t = _serialize_string(tmpnode, &tmplen);
+                *(tmp + i) = t;
+                break;
+            case MCNBT_TAG_LIST:
+                t = _serialize_list(tmpnode, &tmplen);
+                *(tmp + i) = t;
+                break;
+            case MCNBT_TAG_COMPOUND:
+                t = _serialize_compound(tmpnode, &tmplen);
+                *(tmp + i) = t;
+                break;
+            case MCNBT_TAG_INT_ARRAY:
+            case MCNBT_TAG_LONG_ARRAY:
+            default:
+                break;
+        }
+
+        content_len += tmplen;
+        tmpnode = nbt_tree_get_next_child(tmpnode);
     }
 }

@@ -30,4 +30,5 @@ void _mcnbt_alloc_fail(size_t size);
 
 void *_mcnbt_memcat(void *dest, const void *src, size_t n, int pos);
 
+
 #endif //LIBMCNBT_UTIL_H
