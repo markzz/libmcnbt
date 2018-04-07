@@ -44,84 +44,61 @@ typedef enum _tag_type_t {
 typedef struct _nbt_node_t nbt_node_t;
 
 nbt_node_t *nbt_initialize_from_file(const char *filename);
-
 nbt_node_t *nbt_initialize(void *data, size_t size);
 
-nbt_node_t *nbt_tree_get_next(nbt_node_t *node);
+nbt_node_t *nbt_node_get_next(nbt_node_t *node);
+nbt_node_t *nbt_node_get_prev(nbt_node_t *node);
+nbt_node_t *nbt_node_get_root(nbt_node_t *node);
 
-nbt_node_t *nbt_tree_get_prev(nbt_node_t *node);
+void nbt_node_free(nbt_node_t *tree);
+nbt_node_t *nbt_node_initialize(nbt_tag_type_t type, const char *name, void *data);
+nbt_node_t *nbt_node_initialize_len(nbt_tag_type_t type, const char *name, void *data, size_t data_size);
+nbt_node_t *nbt_node_initialize_list(nbt_tag_type_t type, const char *name, void *data, nbt_tag_type_t list_type);
 
-nbt_node_t *nbt_tree_get_root(nbt_node_t *node);
+char *nbt_node_get_name(nbt_node_t *node);
+int nbt_node_set_name(nbt_node_t *node, const char *name);
 
-void nbt_tree_free(nbt_node_t *tree);
+nbt_tag_type_t nbt_node_get_type(nbt_node_t *node);
+char nbt_node_get_data_byte(nbt_node_t *node);
 
-nbt_node_t *nbt_tree_initialize(nbt_tag_type_t type, const char *name, void *data);
+int nbt_node_set_data_byte(nbt_node_t *node, char data);
+double nbt_node_get_data_double(nbt_node_t *node);
 
-nbt_node_t *nbt_tree_initialize_len(nbt_tag_type_t type, const char *name, void *data, size_t data_size);
+int nbt_node_set_data_double(nbt_node_t *node, double data);
 
-nbt_node_t *nbt_tree_initialize_list(nbt_tag_type_t type, const char *name, void *data, nbt_tag_type_t list_type);
+float nbt_node_get_data_float(nbt_node_t *node);
+int nbt_node_set_data_float(nbt_node_t *node, float data);
 
-char *nbt_tree_get_name(nbt_node_t *node);
+short nbt_node_get_data_short(nbt_node_t *node);
+int nbt_node_set_data_short(nbt_node_t *node, short data);
 
-int nbt_tree_set_name(nbt_node_t *node, const char *name);
+long nbt_node_get_data_long(nbt_node_t *node);
+int nbt_node_set_data_long(nbt_node_t *node, long data);
 
-nbt_tag_type_t nbt_tree_get_type(nbt_node_t *node);
+int nbt_node_get_data_int(nbt_node_t *node);
+int nbt_node_set_data_int(nbt_node_t *node, int data);
 
-char nbt_tree_get_data_byte(nbt_node_t *node);
+char *nbt_node_get_data_str(nbt_node_t *node);
+int nbt_node_set_data_str(nbt_node_t *node, char *data);
 
-int nbt_tree_set_data_byte(nbt_node_t *node, char data);
+nbt_tag_type_t nbt_node_get_list_type(nbt_node_t *node);
 
-double nbt_tree_get_data_double(nbt_node_t *node);
+nbt_node_t *nbt_node_get_first_child(nbt_node_t *node);
+nbt_node_t *nbt_node_get_last_child(nbt_node_t *node);
+nbt_node_t *nbt_node_get_parent(nbt_node_t *node);
+nbt_node_t *nbt_node_get_next_child(nbt_node_t *node);
+nbt_node_t *nbt_node_get_prev_child(nbt_node_t *node);
 
-int nbt_tree_set_data_double(nbt_node_t *node, double data);
+int nbt_node_append_child(nbt_node_t *parent, nbt_node_t *child);
+int nbt_node_prepend_child(nbt_node_t *parent, nbt_node_t *child);
+int nbt_node_insert_after(nbt_node_t *left, nbt_node_t *right);
+int nbt_node_insert_before(nbt_node_t *right, nbt_node_t *left);
+int nbt_node_unlink(nbt_node_t *node);
+int nbt_node_replace(nbt_node_t *old, nbt_node_t *new);
 
-float nbt_tree_get_data_float(nbt_node_t *node);
+size_t nbt_node_get_len(nbt_node_t *node);
 
-int nbt_tree_set_data_float(nbt_node_t *node, float data);
-
-short nbt_tree_get_data_short(nbt_node_t *node);
-
-int nbt_tree_set_data_short(nbt_node_t *node, short data);
-
-long nbt_tree_get_data_long(nbt_node_t *node);
-
-int nbt_tree_set_data_long(nbt_node_t *node, long data);
-
-int nbt_tree_get_data_int(nbt_node_t *node);
-
-int nbt_tree_set_data_int(nbt_node_t *node, int data);
-
-char *nbt_tree_get_data_str(nbt_node_t *node);
-
-int nbt_tree_set_data_str(nbt_node_t *node, char *data);
-
-nbt_tag_type_t nbt_tree_get_list_type(nbt_node_t *node);
-
-nbt_node_t *nbt_tree_get_first_child(nbt_node_t *node);
-
-nbt_node_t *nbt_tree_get_last_child(nbt_node_t *node);
-
-nbt_node_t *nbt_tree_get_parent(nbt_node_t *node);
-
-nbt_node_t *nbt_tree_get_next_child(nbt_node_t *node);
-
-nbt_node_t *nbt_tree_get_prev_child(nbt_node_t *node);
-
-int nbt_tree_append_child(nbt_node_t *parent, nbt_node_t *child);
-
-int nbt_tree_prepend_child(nbt_node_t *parent, nbt_node_t *child);
-
-int nbt_tree_insert_after(nbt_node_t *left, nbt_node_t *right);
-
-int nbt_tree_insert_before(nbt_node_t *right, nbt_node_t *left);
-
-int nbt_tree_unlink(nbt_node_t *node);
-
-int nbt_tree_replace(nbt_node_t *old, nbt_node_t *new);
-
-size_t nbt_tree_get_len(nbt_node_t *node);
-
-char *_serialize_string(nbt_node_t *node, size_t *len);
+char *_serialize_compound(nbt_node_t *node, size_t *len);
 
 #ifdef __cplusplus
 }

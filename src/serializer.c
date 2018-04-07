@@ -18,11 +18,12 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 #include "mcnbt.h"
 #include "util.h"
 
-unsigned long _lpow(long a, long b) {
+static unsigned long _lpow(long a, long b) {
     unsigned long long ret = 1;
     for (long i = b; b; b >>= 1) {
         if (b & 1) {
@@ -34,7 +35,7 @@ unsigned long _lpow(long a, long b) {
     return ret;
 }
 
-char *_serialize_numerical_value(void *num, size_t bytes) {
+static char *_serialize_numerical_value(void *num, size_t bytes) {
     char *ret = NULL;
     CALLOC(ret, bytes, sizeof(char), return NULL);
 
@@ -45,15 +46,15 @@ char *_serialize_numerical_value(void *num, size_t bytes) {
     return ret;
 }
 
-char *_serialize_byte(nbt_node_t *node, size_t *len) {
+static char *_serialize_byte(nbt_node_t *node, size_t *len) {
     ASSERT(node != NULL, return NULL);
-    ASSERT(nbt_tree_get_type(node) == MCNBT_TAG_BYTE, return NULL);
+    ASSERT(nbt_node_get_type(node) == MCNBT_TAG_BYTE, return NULL);
     char *ret = NULL;
     size_t ret_size = 2;
     char *name_size = NULL;
-    char byte = nbt_tree_get_data_byte(node);
+    char byte = nbt_node_get_data_byte(node);
 
-    char *name = nbt_tree_get_name(node);
+    char *name = nbt_node_get_name(node);
     size_t name_len;
     if (name != NULL) {
         ret_size += 2;
@@ -87,16 +88,16 @@ char *_serialize_byte(nbt_node_t *node, size_t *len) {
     return ret;
 }
 
-char *_serialize_short(nbt_node_t *node, size_t *len) {
+static char *_serialize_short(nbt_node_t *node, size_t *len) {
     ASSERT(node != NULL, return NULL);
-    ASSERT(nbt_tree_get_type(node) == MCNBT_TAG_SHORT, return NULL);
+    ASSERT(nbt_node_get_type(node) == MCNBT_TAG_SHORT, return NULL);
     char *ret = NULL;
     size_t ret_size = 3;
     char *name_size = NULL;
-    short data = nbt_tree_get_data_short(node);
+    short data = nbt_node_get_data_short(node);
     char *sdata = _serialize_numerical_value(&data, 2);
 
-    char *name = nbt_tree_get_name(node);
+    char *name = nbt_node_get_name(node);
     size_t name_len;
     if (name != NULL) {
         ret_size += 2;
@@ -131,16 +132,16 @@ char *_serialize_short(nbt_node_t *node, size_t *len) {
     return ret;
 }
 
-char *_serialize_int(nbt_node_t *node, size_t *len) {
+static char *_serialize_int(nbt_node_t *node, size_t *len) {
     ASSERT(node != NULL, return NULL);
-    ASSERT(nbt_tree_get_type(node) == MCNBT_TAG_INT, return NULL);
+    ASSERT(nbt_node_get_type(node) == MCNBT_TAG_INT, return NULL);
     char *ret = NULL;
     size_t ret_size = 5;
     char *name_size = NULL;
-    int data = nbt_tree_get_data_int(node);
+    int data = nbt_node_get_data_int(node);
     char *sdata = _serialize_numerical_value(&data, 4);
 
-    char *name = nbt_tree_get_name(node);
+    char *name = nbt_node_get_name(node);
     size_t name_len;
     if (name != NULL) {
         ret_size += 2;
@@ -175,16 +176,16 @@ char *_serialize_int(nbt_node_t *node, size_t *len) {
     return ret;
 }
 
-char *_serialize_long(nbt_node_t *node, size_t *len) {
+static char *_serialize_long(nbt_node_t *node, size_t *len) {
     ASSERT(node != NULL, return NULL);
-    ASSERT(nbt_tree_get_type(node) == MCNBT_TAG_LONG, return NULL);
+    ASSERT(nbt_node_get_type(node) == MCNBT_TAG_LONG, return NULL);
     char *ret = NULL;
     size_t ret_size = 9;
     char *name_size = NULL;
-    long data = nbt_tree_get_data_long(node);
+    long data = nbt_node_get_data_long(node);
     char *sdata = _serialize_numerical_value(&data, 8);
 
-    char *name = nbt_tree_get_name(node);
+    char *name = nbt_node_get_name(node);
     size_t name_len;
     if (name != NULL) {
         ret_size += 2;
@@ -219,16 +220,16 @@ char *_serialize_long(nbt_node_t *node, size_t *len) {
     return ret;
 }
 
-char *_serialize_float(nbt_node_t *node, size_t *len) {
+static char *_serialize_float(nbt_node_t *node, size_t *len) {
     ASSERT(node != NULL, return NULL);
-    ASSERT(nbt_tree_get_type(node) == MCNBT_TAG_FLOAT, return NULL);
+    ASSERT(nbt_node_get_type(node) == MCNBT_TAG_FLOAT, return NULL);
     char *ret = NULL;
     size_t ret_size = 5;
     char *name_size = NULL;
-    float data = nbt_tree_get_data_float(node);
+    float data = nbt_node_get_data_float(node);
     char *sdata = _serialize_numerical_value(&data, 4);
 
-    char *name = nbt_tree_get_name(node);
+    char *name = nbt_node_get_name(node);
     size_t name_len;
     if (name != NULL) {
         ret_size += 2;
@@ -263,16 +264,16 @@ char *_serialize_float(nbt_node_t *node, size_t *len) {
     return ret;
 }
 
-char *_serialize_double(nbt_node_t *node, size_t *len) {
+static char *_serialize_double(nbt_node_t *node, size_t *len) {
     ASSERT(node != NULL, return NULL);
-    ASSERT(nbt_tree_get_type(node) == MCNBT_TAG_DOUBLE, return NULL);
+    ASSERT(nbt_node_get_type(node) == MCNBT_TAG_DOUBLE, return NULL);
     char *ret = NULL;
     size_t ret_size = 9;
     char *name_size = NULL;
-    double data = nbt_tree_get_data_double(node);
+    double data = nbt_node_get_data_double(node);
     char *sdata = _serialize_numerical_value(&data, 8);
 
-    char *name = nbt_tree_get_name(node);
+    char *name = nbt_node_get_name(node);
     size_t name_len;
     if (name != NULL) {
         ret_size += 2;
@@ -307,17 +308,17 @@ char *_serialize_double(nbt_node_t *node, size_t *len) {
     return ret;
 }
 
-char *_serialize_byte_array(nbt_node_t *node, size_t *len) {
+static char *_serialize_byte_array(nbt_node_t *node, size_t *len) {
     ASSERT(node != NULL, return NULL);
-    ASSERT(nbt_tree_get_type(node) == MCNBT_TAG_BYTE_ARRAY, return NULL);
+    ASSERT(nbt_node_get_type(node) == MCNBT_TAG_BYTE_ARRAY, return NULL);
     char *ret = NULL;
     size_t ret_size = 5;
     char *name_size = NULL;
-    char *data = nbt_tree_get_data_str(node);
-    size_t dlen = nbt_tree_get_len(node);
+    char *data = nbt_node_get_data_str(node);
+    size_t dlen = nbt_node_get_len(node);
     char *sdlen = _serialize_numerical_value(&dlen, 4);
 
-    char *name = nbt_tree_get_name(node);
+    char *name = nbt_node_get_name(node);
     size_t name_len;
     if (name != NULL) {
         ret_size += 2;
@@ -355,17 +356,17 @@ char *_serialize_byte_array(nbt_node_t *node, size_t *len) {
     return ret;
 }
 
-char *_serialize_string(nbt_node_t *node, size_t *len) {
+static char *_serialize_string(nbt_node_t *node, size_t *len) {
     ASSERT(node != NULL, return NULL);
-    ASSERT(nbt_tree_get_type(node) == MCNBT_TAG_STRING, return NULL);
+    ASSERT(nbt_node_get_type(node) == MCNBT_TAG_STRING, return NULL);
     char *ret = NULL;
     size_t ret_size = 3;
     char *name_size = NULL;
-    char *data = nbt_tree_get_data_str(node);
+    char *data = nbt_node_get_data_str(node);
     size_t dlen = strlen(data);
     char *sdlen = _serialize_numerical_value(&dlen, 2);
 
-    char *name = nbt_tree_get_name(node);
+    char *name = nbt_node_get_name(node);
     size_t name_len;
     if (name != NULL) {
         ret_size += 2;
@@ -407,19 +408,21 @@ char *_serialize_compound(nbt_node_t *node, size_t *len);
 
 char *_serialize_list(nbt_node_t *node, size_t *len) {
     ASSERT(node != NULL, return NULL);
-    ASSERT(nbt_tree_get_type(node) == MCNBT_TAG_LIST, return NULL);
+    ASSERT(nbt_node_get_type(node) == MCNBT_TAG_LIST, return NULL);
     char *ret = NULL;
-    size_t ret_size = 2;
+    size_t ret_size = 6;
     char *name_size = NULL;
-    size_t l = nbt_tree_get_len(node);
+    size_t l = nbt_node_get_len(node);
     char *sl = _serialize_numerical_value(&l, 4);
     char **tmp = NULL;
-    char *t;
+    char *t = NULL;
     nbt_node_t *tmpnode;
+    size_t sizes[l];
     size_t tmplen = 0;
     size_t content_len = 0;
+    int cur_pos;
 
-    char *name = nbt_tree_get_name(node);
+    char *name = nbt_node_get_name(node);
     size_t name_len;
     if (name != NULL) {
         ret_size += 2;
@@ -433,13 +436,14 @@ char *_serialize_list(nbt_node_t *node, size_t *len) {
     }
 
     CALLOC(tmp, l, sizeof(char *), return NULL);
-    tmpnode = nbt_tree_get_first_child(node);
+    tmpnode = nbt_node_get_first_child(node);
     for (int i = 0; i < l; i++) {
         if (tmpnode == NULL) {
-            break;
+            fprintf(stderr, "too few nodes in list\n");
+            goto free;
         }
 
-        switch (nbt_tree_get_type(node)) {
+        switch (nbt_node_get_type(tmpnode)) {
             case MCNBT_TAG_BYTE:
                 t = _serialize_byte(tmpnode, &tmplen);
                 *(tmp + i) = t;
@@ -480,13 +484,174 @@ char *_serialize_list(nbt_node_t *node, size_t *len) {
                 t = _serialize_compound(tmpnode, &tmplen);
                 *(tmp + i) = t;
                 break;
-            case MCNBT_TAG_INT_ARRAY:
-            case MCNBT_TAG_LONG_ARRAY:
+            case MCNBT_TAG_INT_ARRAY:  /* unimplemented */
+            case MCNBT_TAG_LONG_ARRAY: /* unimplemented */
             default:
                 break;
         }
 
+        sizes[i] = tmplen;
         content_len += tmplen;
-        tmpnode = nbt_tree_get_next_child(tmpnode);
+        tmpnode = nbt_node_get_next_child(tmpnode);
     }
+
+    ret_size += name_len + content_len;
+    CALLOC(ret, ret_size, sizeof(char), return NULL);
+    ret[0] = MCNBT_TAG_LIST;
+    if (name_len > 0) {
+        _mcnbt_memcat(ret, name_size, 2, 1);
+        _mcnbt_memcat(ret, name, strlen(name), 3);
+        ret[3 + strlen(name)] = nbt_node_get_list_type(node);
+        _mcnbt_memcat(ret, sl, 4, 4 + (int) strlen(name));
+
+        cur_pos = 8 + (int) strlen(name);
+        for (int i = 0; i < l; i++) {
+            _mcnbt_memcat(ret, tmp[i], sizes[i], cur_pos);
+            cur_pos += sizes[i];
+        }
+    } else {
+        ret[1] = nbt_node_get_list_type(node);
+        _mcnbt_memcat(ret, sl, 4, 2);
+
+        cur_pos = 6;
+        for (int i = 0; i < l; i++) {
+            _mcnbt_memcat(ret, tmp[i], sizes[i], cur_pos);
+            cur_pos += sizes[i];
+        }
+    }
+
+    if (len != NULL) {
+        *len = ret_size;
+    }
+
+free:
+    FREE(name_size);
+    FREE(sl);
+    for (int i = 0; i < l; i++) {
+        FREE(tmp[i]);
+    }
+    FREE(tmp);
+    return ret;
+}
+
+char *_serialize_compound(nbt_node_t *node, size_t *len) {
+    ASSERT(node != NULL, return NULL);
+    ASSERT(nbt_node_get_type(node) == MCNBT_TAG_COMPOUND, return NULL);
+    char *ret = NULL;
+    size_t ret_size = 2;
+    char *name_size = NULL;
+    size_t l = nbt_node_get_len(node);
+    char **tmp = NULL;
+    char *t = NULL;
+    nbt_node_t *tmpnode;
+    size_t sizes[l];
+    size_t tmplen = 0;
+    size_t content_len = 0;
+    int cur_pos;
+
+    char *name = nbt_node_get_name(node);
+    size_t name_len;
+    if (name != NULL) {
+        ret_size += 2;
+        name_len = strlen(name);
+    } else {
+        name_len = 0;
+    }
+
+    if (name_len != 0) {
+        name_size = _serialize_numerical_value(&name_len, 2);
+    }
+
+    CALLOC(tmp, l, sizeof(char *), return NULL);
+    tmpnode = nbt_node_get_first_child(node);
+    for (int i = 0; i < l; i++) {
+        if (tmpnode == NULL) {
+            fprintf(stderr, "too few nodes in list\n");
+            goto free;
+        }
+
+        switch (nbt_node_get_type(tmpnode)) {
+            case MCNBT_TAG_BYTE:
+                t = _serialize_byte(tmpnode, &tmplen);
+                *(tmp + i) = t;
+                break;
+            case MCNBT_TAG_SHORT:
+                t = _serialize_short(tmpnode, &tmplen);
+                *(tmp + i) = t;
+                break;
+            case MCNBT_TAG_INT:
+                t = _serialize_int(tmpnode, &tmplen);
+                *(tmp + i) = t;
+                break;
+            case MCNBT_TAG_LONG:
+                t = _serialize_long(tmpnode, &tmplen);
+                *(tmp + i) = t;
+                break;
+            case MCNBT_TAG_FLOAT:
+                t = _serialize_float(tmpnode, &tmplen);
+                *(tmp + i) = t;
+                break;
+            case MCNBT_TAG_DOUBLE:
+                t = _serialize_double(tmpnode, &tmplen);
+                *(tmp + i) = t;
+                break;
+            case MCNBT_TAG_BYTE_ARRAY:
+                t = _serialize_byte_array(tmpnode, &tmplen);
+                *(tmp + i) = t;
+                break;
+            case MCNBT_TAG_STRING:
+                t = _serialize_string(tmpnode, &tmplen);
+                *(tmp + i) = t;
+                break;
+            case MCNBT_TAG_LIST:
+                t = _serialize_list(tmpnode, &tmplen);
+                *(tmp + i) = t;
+                break;
+            case MCNBT_TAG_COMPOUND:
+                t = _serialize_compound(tmpnode, &tmplen);
+                *(tmp + i) = t;
+                break;
+            case MCNBT_TAG_INT_ARRAY:  /* unimplemented */
+            case MCNBT_TAG_LONG_ARRAY: /* unimplemented */
+            default:
+                break;
+        }
+
+        sizes[i] = tmplen;
+        content_len += tmplen;
+        tmpnode = nbt_node_get_next_child(tmpnode);
+    }
+
+    ret_size += name_len + content_len;
+    CALLOC(ret, ret_size, sizeof(char), return NULL);
+    ret[0] = MCNBT_TAG_COMPOUND;
+    if (name_len > 0) {
+        _mcnbt_memcat(ret, name_size, 2, 1);
+        _mcnbt_memcat(ret, name, strlen(name), 3);
+
+        cur_pos = 3 + (int) strlen(name);
+        for (int i = 0; i < l; i++) {
+            _mcnbt_memcat(ret, tmp[i], sizes[i], cur_pos);
+            cur_pos += sizes[i];
+        }
+    } else {
+        cur_pos = 1;
+        for (int i = 0; i < l; i++) {
+            _mcnbt_memcat(ret, tmp[i], sizes[i], cur_pos);
+            cur_pos += sizes[i];
+        }
+    }
+    ret[cur_pos] = MCNBT_TAG_END;
+
+    if (len != NULL) {
+        *len = ret_size;
+    }
+
+    free:
+    FREE(name_size);
+    for (int i = 0; i < l; i++) {
+        FREE(tmp[i]);
+    }
+    FREE(tmp);
+    return ret;
 }

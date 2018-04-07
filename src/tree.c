@@ -50,7 +50,7 @@ struct _nbt_node_t {
     nbt_tag_type_t list_type;
 };
 
-void nbt_tree_free(nbt_node_t *tree) {
+void nbt_node_free(nbt_node_t *tree) {
     nbt_node_t *item;
     ASSERT(tree != NULL, return);
 
@@ -60,7 +60,7 @@ void nbt_tree_free(nbt_node_t *tree) {
             item = tree->first_child;
             while (item != NULL) {
                 nbt_node_t *tmp = item->next_child;
-                nbt_tree_free(item);
+                nbt_node_free(item);
                 item = tmp;
             }
             break;
@@ -71,15 +71,17 @@ void nbt_tree_free(nbt_node_t *tree) {
             break;
     }
 
-    FREE(tree->name);
+    if (tree->name != NULL) {
+        FREE(tree->name);
+    }
     FREE(tree);
 }
 
-nbt_node_t *nbt_tree_initialize(nbt_tag_type_t type, const char *name, void *data) {
-    return nbt_tree_initialize_len(type, name, data, 0);
+nbt_node_t *nbt_node_initialize(nbt_tag_type_t type, const char *name, void *data) {
+    return nbt_node_initialize_len(type, name, data, 0);
 }
 
-nbt_node_t *nbt_tree_initialize_len(nbt_tag_type_t type, const char *name, void *data, size_t data_size) {
+nbt_node_t *nbt_node_initialize_len(nbt_tag_type_t type, const char *name, void *data, size_t data_size) {
     nbt_node_t *ret = (nbt_node_t *) malloc(sizeof(nbt_node_t));
 
     ret->type = type;
@@ -138,18 +140,18 @@ nbt_node_t *nbt_tree_initialize_len(nbt_tag_type_t type, const char *name, void 
     return ret;
 }
 
-nbt_node_t *nbt_tree_initialize_list(nbt_tag_type_t type, const char *name, void *data, nbt_tag_type_t list_type) {
-    nbt_node_t *ret = nbt_tree_initialize(type, name, data);
+nbt_node_t *nbt_node_initialize_list(nbt_tag_type_t type, const char *name, void *data, nbt_tag_type_t list_type) {
+    nbt_node_t *ret = nbt_node_initialize(type, name, data);
     ret->list_type = list_type;
     return ret;
 }
 
-char *nbt_tree_get_name(nbt_node_t *node) {
+char *nbt_node_get_name(nbt_node_t *node) {
     ASSERT(node != NULL, return NULL);
     return node->name;
 }
 
-int nbt_tree_set_name(nbt_node_t *node, const char *name) {
+int nbt_node_set_name(nbt_node_t *node, const char *name) {
     ASSERT(node != NULL, return -1);
     ASSERT(node->type == MCNBT_TAG_LIST, return -1);
 
@@ -158,7 +160,7 @@ int nbt_tree_set_name(nbt_node_t *node, const char *name) {
     return 0;
 }
 
-nbt_tag_type_t nbt_tree_get_type(nbt_node_t *node) {
+nbt_tag_type_t nbt_node_get_type(nbt_node_t *node) {
     if (node == NULL) {
         return MCNBT_TAG_END;
     }
@@ -166,91 +168,91 @@ nbt_tag_type_t nbt_tree_get_type(nbt_node_t *node) {
     return node->type;
 }
 
-char nbt_tree_get_data_byte(nbt_node_t *node) {
+char nbt_node_get_data_byte(nbt_node_t *node) {
     ASSERT(node != NULL, return -1);
     ASSERT(node->type == MCNBT_TAG_BYTE, return -1);
     return node->data.b;
 }
 
-int nbt_tree_set_data_byte(nbt_node_t *node, char data) {
+int nbt_node_set_data_byte(nbt_node_t *node, char data) {
     ASSERT(node != NULL, return -1);
     ASSERT(node->type == MCNBT_TAG_BYTE, return -1);
     node->data.b = data;
     return 0;
 }
 
-double nbt_tree_get_data_double(nbt_node_t *node) {
+double nbt_node_get_data_double(nbt_node_t *node) {
     ASSERT(node != NULL, return -1);
     ASSERT(node->type == MCNBT_TAG_DOUBLE, return -1);
     return node->data.d;
 }
 
-int nbt_tree_set_data_double(nbt_node_t *node, double data) {
+int nbt_node_set_data_double(nbt_node_t *node, double data) {
     ASSERT(node != NULL, return -1);
     ASSERT(node->type == MCNBT_TAG_DOUBLE, return -1);
     node->data.d = data;
     return 0;
 }
 
-float nbt_tree_get_data_float(nbt_node_t *node) {
+float nbt_node_get_data_float(nbt_node_t *node) {
     ASSERT(node != NULL, return -1);
     ASSERT(node->type == MCNBT_TAG_FLOAT, return -1);
     return node->data.f;
 }
 
-int nbt_tree_set_data_float(nbt_node_t *node, float data) {
+int nbt_node_set_data_float(nbt_node_t *node, float data) {
     ASSERT(node != NULL, return -1);
     ASSERT(node->type == MCNBT_TAG_FLOAT, return -1);
     node->data.f = data;
     return 0;
 }
 
-short nbt_tree_get_data_short(nbt_node_t *node) {
+short nbt_node_get_data_short(nbt_node_t *node) {
     ASSERT(node != NULL, return -1);
     ASSERT(node->type == MCNBT_TAG_SHORT, return -1);
     return node->data.s;
 }
 
-int nbt_tree_set_data_short(nbt_node_t *node, short data) {
+int nbt_node_set_data_short(nbt_node_t *node, short data) {
     ASSERT(node != NULL, return -1);
     ASSERT(node->type == MCNBT_TAG_SHORT, return -1);
     node->data.s = data;
     return 0;
 }
 
-long nbt_tree_get_data_long(nbt_node_t *node) {
+long nbt_node_get_data_long(nbt_node_t *node) {
     ASSERT(node != NULL, return -1);
     ASSERT(node->type == MCNBT_TAG_LONG, return -1);
     return node->data.l;
 }
 
-int nbt_tree_set_data_long(nbt_node_t *node, long data) {
+int nbt_node_set_data_long(nbt_node_t *node, long data) {
     ASSERT(node != NULL, return -1);
     ASSERT(node->type == MCNBT_TAG_LONG, return -1);
     node->data.l = data;
     return 0;
 }
 
-int nbt_tree_get_data_int(nbt_node_t *node) {
+int nbt_node_get_data_int(nbt_node_t *node) {
     ASSERT(node != NULL, return -1);
     ASSERT(node->type == MCNBT_TAG_INT, return -1);
     return node->data.i;
 }
 
-int nbt_tree_set_data_int(nbt_node_t *node, int data) {
+int nbt_node_set_data_int(nbt_node_t *node, int data) {
     ASSERT(node != NULL, return -1);
     ASSERT(node->type == MCNBT_TAG_INT, return -1);
     node->data.i = data;
     return 0;
 }
 
-char *nbt_tree_get_data_str(nbt_node_t *node) {
+char *nbt_node_get_data_str(nbt_node_t *node) {
     ASSERT(node != NULL, return -1);
     ASSERT(node->type == MCNBT_TAG_STRING || node->type == MCNBT_TAG_BYTE_ARRAY, return -1);
     return node->data.str;
 }
 
-int nbt_tree_set_data_str(nbt_node_t *node, char *data) {
+int nbt_node_set_data_str(nbt_node_t *node, char *data) {
     ASSERT(node != NULL, return -1);
     ASSERT(node->type == MCNBT_TAG_STRING, return -1);
     node->data.str = data;
@@ -258,41 +260,52 @@ int nbt_tree_set_data_str(nbt_node_t *node, char *data) {
     return 0;
 }
 
-nbt_tag_type_t nbt_tree_get_list_type(nbt_node_t *node) {
+nbt_tag_type_t nbt_node_get_list_type(nbt_node_t *node) {
     ASSERT(node != NULL, return MCNBT_TAG_END);
     ASSERT(node->type == MCNBT_TAG_LIST, return MCNBT_TAG_END);
     return node->list_type;
 }
 
-nbt_node_t *nbt_tree_get_first_child(nbt_node_t *node) {
+nbt_node_t *nbt_node_get_first_child(nbt_node_t *node) {
     ASSERT(node != NULL, return NULL);
     return node->first_child;
 }
 
-nbt_node_t *nbt_tree_get_last_child(nbt_node_t *node) {
+nbt_node_t *nbt_node_get_last_child(nbt_node_t *node) {
     ASSERT(node != NULL, return NULL);
     return node->last_child;
 }
 
-nbt_node_t *nbt_tree_get_parent(nbt_node_t *node) {
+nbt_node_t *nbt_node_get_parent(nbt_node_t *node) {
     ASSERT(node != NULL, return NULL);
     return node->parent;
 }
 
-nbt_node_t *nbt_tree_get_next_child(nbt_node_t *node) {
+nbt_node_t *nbt_node_get_next_child(nbt_node_t *node) {
     ASSERT(node != NULL, return NULL);
     return node->next_child;
 }
 
-nbt_node_t *nbt_tree_get_prev_child(nbt_node_t *node) {
+nbt_node_t *nbt_node_get_prev_child(nbt_node_t *node) {
     ASSERT(node != NULL, return NULL);
     return node->prev_child;
 }
 
-int nbt_tree_append_child(nbt_node_t *parent, nbt_node_t *child) {
+static void _strip_name(nbt_node_t *node) {
+    if (node->name != NULL) {
+        FREE(node->name);
+        node->name = NULL;
+    }
+}
+
+int nbt_node_append_child(nbt_node_t *parent, nbt_node_t *child) {
     ASSERT(parent != NULL, return -1);
     ASSERT(child != NULL, return -1);
     ASSERT(parent->type == MCNBT_TAG_COMPOUND || parent->type == MCNBT_TAG_LIST, return -1);
+
+    if (parent->type == MCNBT_TAG_LIST) {
+        _strip_name(child);
+    }
 
     if (parent->first_child == NULL) {
         parent->first_child = child;
@@ -311,10 +324,14 @@ int nbt_tree_append_child(nbt_node_t *parent, nbt_node_t *child) {
     return 0;
 }
 
-int nbt_tree_prepend_child(nbt_node_t *parent, nbt_node_t *child) {
+int nbt_node_prepend_child(nbt_node_t *parent, nbt_node_t *child) {
     ASSERT(parent != NULL, return -1);
     ASSERT(child != NULL, return -1);
     ASSERT(parent->type == MCNBT_TAG_COMPOUND || parent->type == MCNBT_TAG_LIST, return -1);
+
+    if (parent->type == MCNBT_TAG_LIST) {
+        _strip_name(child);
+    }
 
     if (parent->first_child == NULL) {
         parent->first_child = child;
@@ -334,10 +351,14 @@ int nbt_tree_prepend_child(nbt_node_t *parent, nbt_node_t *child) {
 }
 
 
-int nbt_tree_insert_after(nbt_node_t *left, nbt_node_t *right) {
+int nbt_node_insert_after(nbt_node_t *left, nbt_node_t *right) {
     ASSERT(left != NULL, return -1);
     ASSERT(right != NULL, return -1);
     ASSERT(left->parent != NULL, return -1);
+
+    if (left->parent->type == MCNBT_TAG_LIST) {
+        _strip_name(right);
+    }
 
     nbt_node_t *parent = left->parent;
     if (parent->first_child == parent->last_child) {
@@ -360,10 +381,14 @@ int nbt_tree_insert_after(nbt_node_t *left, nbt_node_t *right) {
     return 0;
 }
 
-int nbt_tree_insert_before(nbt_node_t *right, nbt_node_t *left) {
+int nbt_node_insert_before(nbt_node_t *right, nbt_node_t *left) {
     ASSERT(left != NULL, return -1);
     ASSERT(right != NULL, return -1);
     ASSERT(right->parent != NULL, return -1);
+
+    if (right->parent->type == MCNBT_TAG_LIST) {
+        _strip_name(left);
+    }
 
     nbt_node_t *parent = right->parent;
     if (parent->first_child == parent->last_child) {
@@ -386,7 +411,7 @@ int nbt_tree_insert_before(nbt_node_t *right, nbt_node_t *left) {
     return 0;
 }
 
-int nbt_tree_unlink(nbt_node_t *node) {
+int nbt_node_unlink(nbt_node_t *node) {
     ASSERT(node != NULL, return -1);
     nbt_node_t *parent = node->parent;
 
@@ -414,16 +439,16 @@ int nbt_tree_unlink(nbt_node_t *node) {
     return 0;
 }
 
-int nbt_tree_replace(nbt_node_t *old, nbt_node_t *new) {
-    if (nbt_tree_insert_before(old, new) != 0) {
+int nbt_node_replace(nbt_node_t *old, nbt_node_t *new) {
+    if (nbt_node_insert_before(old, new) != 0) {
         return -1;
     }
 
-    nbt_tree_unlink(old);
+    nbt_node_unlink(old);
     return 0;
 }
 
-size_t nbt_tree_get_len(nbt_node_t *node) {
+size_t nbt_node_get_len(nbt_node_t *node) {
     ASSERT(node != NULL, return -1);
     size_t ret = 0;
 
@@ -441,7 +466,7 @@ size_t nbt_tree_get_len(nbt_node_t *node) {
     }
 }
 
-int nbt_tree_set_len(nbt_node_t *node, size_t len) {
+int nbt_node_set_len(nbt_node_t *node, size_t len) {
     ASSERT(node != NULL, return -1);
     ASSERT(node->type == MCNBT_TAG_BYTE_ARRAY || node->type == MCNBT_TAG_STRING, return -1);
     node->len = len;
