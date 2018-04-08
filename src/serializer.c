@@ -350,7 +350,6 @@ static char *_serialize_byte_array(nbt_node_t *node, size_t *len) {
     }
 
     FREE(name_size);
-    FREE(data);
     FREE(sdlen);
 
     return ret;
@@ -398,7 +397,6 @@ static char *_serialize_string(nbt_node_t *node, size_t *len) {
     }
 
     FREE(name_size);
-    FREE(data);
     FREE(sdlen);
 
     return ret;
