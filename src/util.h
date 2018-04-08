@@ -19,6 +19,8 @@
 #ifndef LIBMCNBT_UTIL_H
 #define LIBMCNBT_UTIL_H
 
+#define MAX_BUFFER 524288
+
 void _mcnbt_alloc_fail(size_t size);
 
 #define MALLOC(p, s, action) do { p = malloc(s); if (p == NULL) { _mcnbt_alloc_fail(s); action; } } while(0)

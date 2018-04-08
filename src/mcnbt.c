@@ -45,7 +45,7 @@ nbt_node_t *nbt_initialize_from_file(const char *filename) {
 }
 
 nbt_node_t *nbt_initialize(void *data, size_t size) {
-    char buf[100000];
+    char buf[MAX_BUFFER];
     ssize_t s;
 
     struct archive_entry *ae;
@@ -79,5 +79,5 @@ nbt_node_t *nbt_initialize(void *data, size_t size) {
 
     archive_read_free(a);
 
-    return _nbt_parse(buf, sizeof(buf), NULL, NULL);
+    return _nbt_parse(buf, s, NULL, NULL);
 }
