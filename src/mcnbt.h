@@ -80,6 +80,13 @@ int nbt_node_set_data_int(nbt_node_t *node, int data);
 
 char *nbt_node_get_data_str(nbt_node_t *node);
 int nbt_node_set_data_str(nbt_node_t *node, char *data);
+int nbt_node_set_data_byte_array(nbt_node_t *node, char *data, size_t len);
+
+int *nbt_node_get_data_int_array(nbt_node_t *node);
+int nbt_node_set_data_int_array(nbt_node_t *node, int *data, size_t len);
+
+long *nbt_node_get_data_long_array(nbt_node_t *node);
+int nbt_node_set_data_long_array(nbt_node_t *node, long *data, size_t len);
 
 nbt_tag_type_t nbt_node_get_list_type(nbt_node_t *node);
 

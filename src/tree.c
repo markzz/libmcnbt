@@ -32,7 +32,7 @@ struct _nbt_node_t {
         long l;
         float f;
         double d;
-        char *str;
+        void *str;
     } data;
 
     char *name;
@@ -127,7 +127,15 @@ nbt_node_t *nbt_node_initialize_len(nbt_tag_type_t type, const char *name, void 
         case MCNBT_TAG_END:
         case MCNBT_TAG_COMPOUND:
         case MCNBT_TAG_INT_ARRAY:
+            CALLOC(ret->data.str, data_size, sizeof(int), return NULL);
+            memcpy(ret->data.str, (char *) data, data_size);
+            ret->len = data_size / 4;
+            break;
         case MCNBT_TAG_LONG_ARRAY:
+            CALLOC(ret->data.str, data_size, sizeof(long), return NULL);
+            memcpy(ret->data.str, (char *) data, data_size);
+            ret->len = data_size / 8;
+            break;
         default:
             break;
     }
@@ -256,8 +264,52 @@ char *nbt_node_get_data_str(nbt_node_t *node) {
 int nbt_node_set_data_str(nbt_node_t *node, char *data) {
     ASSERT(node != NULL, return -1);
     ASSERT(node->type == MCNBT_TAG_STRING, return -1);
-    node->data.str = data;
+    FREE(node->data.str);
+    CALLOC(node->data.str, strlen(data) + 1, sizeof(char), return -1);
+    strncpy(node->data.str, data, strlen(data) + 1);
     node->len = strlen(data);
+    return 0;
+}
+
+int nbt_node_set_data_byte_array(nbt_node_t *node, char *data, size_t len) {
+    ASSERT(node != NULL, return -1);
+    ASSERT(node->type == MCNBT_TAG_BYTE_ARRAY, return -1);
+    FREE(node->data.str);
+    CALLOC(node->data.str, len, sizeof(char), return -1);
+    memcpy(node->data.str, data, len);
+    node->len = len;
+    return 0;
+}
+
+int *nbt_node_get_data_int_array(nbt_node_t *node) {
+    ASSERT(node != NULL, return NULL);
+    ASSERT(node->type == MCNBT_TAG_INT_ARRAY, return NULL);
+    return node->data.str;
+}
+
+int nbt_node_set_data_int_array(nbt_node_t *node, int *data, size_t len) {
+    ASSERT(node != NULL, return -1);
+    ASSERT(node->type == MCNBT_TAG_BYTE_ARRAY, return -1);
+    FREE(node->data.str);
+    CALLOC(node->data.str, len, sizeof(int), return -1);
+    memcpy(node->data.str, data, len * sizeof(int));
+    node->len = len;
+    return 0;
+}
+
+long *nbt_node_get_data_long_array(nbt_node_t *node) {
+    ASSERT(node != NULL, return NULL);
+    ASSERT(node->type == MCNBT_TAG_LONG_ARRAY, return NULL);
+    return node->data.str;
+}
+
+int nbt_node_set_data_long_array(nbt_node_t *node, long *data, size_t len) {
+    ASSERT(node != NULL, return -1);
+    ASSERT(node->type == MCNBT_TAG_BYTE_ARRAY, return -1);
+    FREE(node->data.str);
+    CALLOC(node->data.str, len, sizeof(long), return -1);
+    memcpy(node->data.str, data, len * sizeof(long));
+    node->len = len;
     return 0;
 }
 

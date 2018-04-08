@@ -303,6 +303,30 @@ static nbt_node_t *_nbt_parse_string(void *data, int *pos, int in_list) {
     return ret;
 }
 
+static nbt_node_t *_parse_int_array(void *data, int *pos, int in_list) {
+    nbt_node_t *ret;
+    char *name = NULL;
+    size_t name_len;
+    char *stor;
+    int s = 0;
+
+    if (in_list == 0) {
+        name_len = (size_t)((char *) data)[*pos] << 8;
+        *pos += 1;
+        name_len += (size_t)((char *) data)[*pos];
+        *pos += 1;
+
+        MALLOC(name, (name_len + 1) * sizeof(char), return NULL);
+        for (int i = *pos; i < *pos + name_len; i++) {
+            *(name + i - *pos) = ((char *) data)[i];
+        }
+        *(name + name_len) = '\0';
+        *pos += name_len;
+    }
+
+
+}
+
 nbt_node_t *_nbt_parse(void *data, size_t size, nbt_node_t *root, int *pos) {
     nbt_node_t *ret;
     nbt_node_t *current_parent = NULL;
