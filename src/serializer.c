@@ -24,7 +24,7 @@
 #include "util.h"
 
 static unsigned long _lpow(long a, long b) {
-    unsigned long long ret = 1;
+    unsigned long ret = 1;
     for (long i = b; b; b >>= 1) {
         if (b & 1) {
             ret *= a;
