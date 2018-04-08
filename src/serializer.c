@@ -63,15 +63,13 @@ static char *_serialize_byte(nbt_node_t *node, size_t *len) {
         name_len = 0;
     }
 
-    if (name_len != 0) {
-        name_size = _serialize_numerical_value(&name_len, 2);
-    }
+    name_size = _serialize_numerical_value(&name_len, 2);
 
     ret_size += name_len;
     CALLOC(ret, ret_size, sizeof(char), return NULL);
 
     ret[0] = MCNBT_TAG_BYTE;
-    if (name_len > 0) {
+    if (name != NULL) {
         _mcnbt_memcat(ret, name_size, 2, 1);
         _mcnbt_memcat(ret, name, strlen(name), 3);
         _mcnbt_memcat(ret, &byte, 1, 3 + (int) strlen(name));
@@ -106,15 +104,13 @@ static char *_serialize_short(nbt_node_t *node, size_t *len) {
         name_len = 0;
     }
 
-    if (name_len != 0) {
-        name_size = _serialize_numerical_value(&name_len, 2);
-    }
+    name_size = _serialize_numerical_value(&name_len, 2);
 
     ret_size += name_len;
     CALLOC(ret, ret_size, sizeof(char), return NULL);
 
     ret[0] = MCNBT_TAG_SHORT;
-    if (name_len > 0) {
+    if (name != NULL) {
         _mcnbt_memcat(ret, name_size, 2, 1);
         _mcnbt_memcat(ret, name, strlen(name), 3);
         _mcnbt_memcat(ret, sdata, 2, 3 + (int) strlen(name));
@@ -150,15 +146,13 @@ static char *_serialize_int(nbt_node_t *node, size_t *len) {
         name_len = 0;
     }
 
-    if (name_len != 0) {
-        name_size = _serialize_numerical_value(&name_len, 2);
-    }
+    name_size = _serialize_numerical_value(&name_len, 2);
 
     ret_size += name_len;
     CALLOC(ret, ret_size, sizeof(char), return NULL);
 
     ret[0] = MCNBT_TAG_INT;
-    if (name_len > 0) {
+    if (name != NULL) {
         _mcnbt_memcat(ret, name_size, 2, 1);
         _mcnbt_memcat(ret, name, strlen(name), 3);
         _mcnbt_memcat(ret, sdata, 4, 3 + (int) strlen(name));
@@ -194,15 +188,13 @@ static char *_serialize_long(nbt_node_t *node, size_t *len) {
         name_len = 0;
     }
 
-    if (name_len != 0) {
-        name_size = _serialize_numerical_value(&name_len, 2);
-    }
+    name_size = _serialize_numerical_value(&name_len, 2);
 
     ret_size += name_len;
     CALLOC(ret, ret_size, sizeof(char), return NULL);
 
     ret[0] = MCNBT_TAG_LONG;
-    if (name_len > 0) {
+    if (name != NULL) {
         _mcnbt_memcat(ret, name_size, 2, 1);
         _mcnbt_memcat(ret, name, strlen(name), 3);
         _mcnbt_memcat(ret, sdata, 8, 3 + (int) strlen(name));
@@ -238,15 +230,13 @@ static char *_serialize_float(nbt_node_t *node, size_t *len) {
         name_len = 0;
     }
 
-    if (name_len != 0) {
-        name_size = _serialize_numerical_value(&name_len, 2);
-    }
+    name_size = _serialize_numerical_value(&name_len, 2);
 
     ret_size += name_len;
     CALLOC(ret, ret_size, sizeof(char), return NULL);
 
     ret[0] = MCNBT_TAG_FLOAT;
-    if (name_len > 0) {
+    if (name != NULL) {
         _mcnbt_memcat(ret, name_size, 2, 1);
         _mcnbt_memcat(ret, name, strlen(name), 3);
         _mcnbt_memcat(ret, sdata, 4, 3 + (int) strlen(name));
@@ -282,15 +272,13 @@ static char *_serialize_double(nbt_node_t *node, size_t *len) {
         name_len = 0;
     }
 
-    if (name_len != 0) {
-        name_size = _serialize_numerical_value(&name_len, 2);
-    }
+    name_size = _serialize_numerical_value(&name_len, 2);
 
     ret_size += name_len;
     CALLOC(ret, ret_size, sizeof(char), return NULL);
 
     ret[0] = MCNBT_TAG_DOUBLE;
-    if (name_len > 0) {
+    if (name != NULL) {
         _mcnbt_memcat(ret, name_size, 2, 1);
         _mcnbt_memcat(ret, name, strlen(name), 3);
         _mcnbt_memcat(ret, sdata, 8, 3 + (int) strlen(name));
@@ -327,15 +315,13 @@ static char *_serialize_byte_array(nbt_node_t *node, size_t *len) {
         name_len = 0;
     }
 
-    if (name_len != 0) {
-        name_size = _serialize_numerical_value(&name_len, 2);
-    }
+    name_size = _serialize_numerical_value(&name_len, 2);
 
     ret_size += name_len + dlen;
     CALLOC(ret, ret_size, sizeof(char), return NULL);
 
     ret[0] = MCNBT_TAG_BYTE_ARRAY;
-    if (name_len > 0) {
+    if (name != NULL) {
         _mcnbt_memcat(ret, name_size, 2, 1);
         _mcnbt_memcat(ret, name, strlen(name), 3);
         _mcnbt_memcat(ret, sdlen, 4, 3 + (int) strlen(name));
@@ -374,15 +360,13 @@ static char *_serialize_string(nbt_node_t *node, size_t *len) {
         name_len = 0;
     }
 
-    if (name_len != 0) {
-        name_size = _serialize_numerical_value(&name_len, 2);
-    }
+    name_size = _serialize_numerical_value(&name_len, 2);
 
     ret_size += name_len + dlen;
     CALLOC(ret, ret_size, sizeof(char), return NULL);
 
     ret[0] = MCNBT_TAG_STRING;
-    if (name_len > 0) {
+    if (name != NULL) {
         _mcnbt_memcat(ret, name_size, 2, 1);
         _mcnbt_memcat(ret, name, strlen(name), 3);
         _mcnbt_memcat(ret, sdlen, 2, 3 + (int) strlen(name));
@@ -429,9 +413,7 @@ static char *_serialize_list(nbt_node_t *node, size_t *len) {
         name_len = 0;
     }
 
-    if (name_len != 0) {
-        name_size = _serialize_numerical_value(&name_len, 2);
-    }
+    name_size = _serialize_numerical_value(&name_len, 2);
 
     CALLOC(tmp, l, sizeof(char *), return NULL);
     tmpnode = nbt_node_get_first_child(node);
@@ -496,7 +478,7 @@ static char *_serialize_list(nbt_node_t *node, size_t *len) {
     ret_size += name_len + content_len - l;
     CALLOC(ret, ret_size, sizeof(char), return NULL);
     ret[0] = MCNBT_TAG_LIST;
-    if (name_len > 0) {
+    if (name != NULL) {
         _mcnbt_memcat(ret, name_size, 2, 1);
         _mcnbt_memcat(ret, name, strlen(name), 3);
         ret[3 + strlen(name)] = nbt_node_get_list_type(node);
@@ -556,9 +538,7 @@ static char *_serialize_compound(nbt_node_t *node, size_t *len) {
         name_len = 0;
     }
 
-    if (name_len != 0) {
-        name_size = _serialize_numerical_value(&name_len, 2);
-    }
+    name_size = _serialize_numerical_value(&name_len, 2);
 
     CALLOC(tmp, l, sizeof(char *), return NULL);
     tmpnode = nbt_node_get_first_child(node);
@@ -623,7 +603,7 @@ static char *_serialize_compound(nbt_node_t *node, size_t *len) {
     ret_size += name_len + content_len;
     CALLOC(ret, ret_size, sizeof(char), return NULL);
     ret[0] = MCNBT_TAG_COMPOUND;
-    if (name_len > 0) {
+    if (name != NULL) {
         _mcnbt_memcat(ret, name_size, 2, 1);
         _mcnbt_memcat(ret, name, strlen(name), 3);
 
