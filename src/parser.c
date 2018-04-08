@@ -16,6 +16,8 @@
  *  License along with this library; if not see <http://www.gnu.org/licenses/>.
  */
 
+/* TODO: Clean up this file. */
+
 #include <string.h>
 #include "tree.h"
 #include "mcnbt.h"
@@ -191,6 +193,8 @@ static nbt_node_t *_nbt_parse_num(void *data, int *pos, nbt_tag_type_t type, int
 }
 
 static nbt_node_t *_nbt_parse_string(void *, int *, int);
+static nbt_node_t *_nbt_parse_int_array(void *data, int *pos, int in_list);
+static nbt_node_t *_nbt_parse_long_array(void *data, int *pos, int in_list);
 
 static nbt_node_t *_nbt_parse_list(void *data, size_t size, int *pos, int in_list) {
     nbt_node_t *ret;
@@ -251,6 +255,12 @@ static nbt_node_t *_nbt_parse_list(void *data, size_t size, int *pos, int in_lis
             child = _nbt_parse(data, size, child, pos);
             nbt_node_append_child(ret, child);
             (*pos)++;
+        } else if (list_type == MCNBT_TAG_INT_ARRAY) {
+            child = _nbt_parse_int_array(data, pos, 1);
+            nbt_node_append_child(ret, child);
+        } else if (list_type == MCNBT_TAG_LONG_ARRAY) {
+            child = _nbt_parse_long_array(data, pos, 1);
+            nbt_node_append_child(ret, child);
         }
     }
 
@@ -303,12 +313,12 @@ static nbt_node_t *_nbt_parse_string(void *data, int *pos, int in_list) {
     return ret;
 }
 
-static nbt_node_t *_parse_int_array(void *data, int *pos, int in_list) {
+static nbt_node_t *_nbt_parse_int_array(void *data, int *pos, int in_list) {
     nbt_node_t *ret;
     char *name = NULL;
     size_t name_len;
-    char *stor;
     int s = 0;
+    int *arr = NULL;
 
     if (in_list == 0) {
         name_len = (size_t)((char *) data)[*pos] << 8;
@@ -324,7 +334,71 @@ static nbt_node_t *_parse_int_array(void *data, int *pos, int in_list) {
         *pos += name_len;
     }
 
+    s = (((unsigned char *)data)[*pos] << 24) |
+        (((unsigned char *)data)[*pos + 1] << 16) |
+        (((unsigned char *)data)[*pos + 2] << 8) |
+        (((unsigned char *)data)[*pos + 3]);
+    *pos += 4;
 
+    CALLOC(arr, (size_t) s, sizeof(int), return NULL);
+    for (int i = 0; i < s; i++) {
+        arr[i] = (((unsigned char *)data)[*pos] << 24) |
+                 (((unsigned char *)data)[*pos + 1] << 16) |
+                 (((unsigned char *)data)[*pos + 2] << 8) |
+                 (((unsigned char *)data)[*pos + 3]);
+        *pos += 4;
+    }
+
+    ret = nbt_node_initialize_len(MCNBT_TAG_INT_ARRAY, name, arr, (size_t) s * 4);
+    FREE(arr);
+    FREE(name);
+    return ret;
+}
+
+static nbt_node_t *_nbt_parse_long_array(void *data, int *pos, int in_list) {
+    nbt_node_t *ret;
+    char *name = NULL;
+    size_t name_len;
+    int s = 0;
+    long *arr = NULL;
+
+    if (in_list == 0) {
+        name_len = (size_t)((char *) data)[*pos] << 8;
+        *pos += 1;
+        name_len += (size_t)((char *) data)[*pos];
+        *pos += 1;
+
+        MALLOC(name, (name_len + 1) * sizeof(char), return NULL);
+        for (int i = *pos; i < *pos + name_len; i++) {
+            *(name + i - *pos) = ((char *) data)[i];
+        }
+        *(name + name_len) = '\0';
+        *pos += name_len;
+    }
+
+    s = (((unsigned char *)data)[*pos] << 24) |
+        (((unsigned char *)data)[*pos + 1] << 16) |
+        (((unsigned char *)data)[*pos + 2] << 8) |
+        (((unsigned char *)data)[*pos + 3]);
+    *pos += 4;
+
+    CALLOC(arr, (size_t) s, sizeof(long), return NULL);
+    for (int i = 0; i < s; i++) {
+        arr[i] = ((long)(((unsigned char *)data)[*pos]) << 56) |
+                 ((long)(((unsigned char *)data)[*pos + 1]) << 48) |
+                 ((long)(((unsigned char *)data)[*pos + 2]) << 40) |
+                 ((long)(((unsigned char *)data)[*pos + 3]) << 32) |
+                 (((unsigned char *)data)[*pos + 4] << 24) |
+                 (((unsigned char *)data)[*pos + 5] << 16) |
+                 (((unsigned char *)data)[*pos + 6] << 8) |
+                 (((unsigned char *)data)[*pos + 7]);
+        *pos += 8;
+    }
+
+    ret = nbt_node_initialize_len(MCNBT_TAG_LONG_ARRAY, name, arr, (size_t) s * 8);
+    FREE(arr);
+    FREE(name);
+    return ret;
 }
 
 nbt_node_t *_nbt_parse(void *data, size_t size, nbt_node_t *root, int *pos) {
@@ -388,6 +462,14 @@ nbt_node_t *_nbt_parse(void *data, size_t size, nbt_node_t *root, int *pos) {
                 break;
             case MCNBT_TAG_STRING:
                 tmp = _nbt_parse_string(data, &i, islist);
+                nbt_node_append_child(current_parent, tmp);
+                break;
+            case MCNBT_TAG_INT_ARRAY:
+                tmp = _nbt_parse_int_array(data, &i, islist);
+                nbt_node_append_child(current_parent, tmp);
+                break;
+            case MCNBT_TAG_LONG_ARRAY:
+                tmp = _nbt_parse_long_array(data, &i, islist);
                 nbt_node_append_child(current_parent, tmp);
                 break;
             case MCNBT_TAG_END:
