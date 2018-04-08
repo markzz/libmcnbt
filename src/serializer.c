@@ -493,7 +493,7 @@ static char *_serialize_list(nbt_node_t *node, size_t *len) {
         tmpnode = nbt_node_get_next_child(tmpnode);
     }
 
-    ret_size += name_len + content_len;
+    ret_size += name_len + content_len - l;
     CALLOC(ret, ret_size, sizeof(char), return NULL);
     ret[0] = MCNBT_TAG_LIST;
     if (name_len > 0) {
@@ -504,8 +504,8 @@ static char *_serialize_list(nbt_node_t *node, size_t *len) {
 
         cur_pos = 8 + (int) strlen(name);
         for (int i = 0; i < l; i++) {
-            _mcnbt_memcat(ret, tmp[i], sizes[i], cur_pos);
-            cur_pos += sizes[i];
+            _mcnbt_memcat(ret, (tmp[i] + 1), sizes[i] - 1, cur_pos);
+            cur_pos += sizes[i] - 1;
         }
     } else {
         ret[1] = nbt_node_get_list_type(node);
@@ -513,8 +513,8 @@ static char *_serialize_list(nbt_node_t *node, size_t *len) {
 
         cur_pos = 6;
         for (int i = 0; i < l; i++) {
-            _mcnbt_memcat(ret, tmp[i], sizes[i], cur_pos);
-            cur_pos += sizes[i];
+            _mcnbt_memcat(ret, (tmp[i] + 1), sizes[i] - 1, cur_pos);
+            cur_pos += sizes[i] - 1;
         }
     }
 
