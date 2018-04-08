@@ -428,56 +428,45 @@ static char *_serialize_list(nbt_node_t *node, size_t *len) {
         switch (nbt_node_get_type(tmpnode)) {
             case MCNBT_TAG_BYTE:
                 t = _serialize_byte(tmpnode, &tmplen);
-                *(tmp + i) = t;
                 break;
             case MCNBT_TAG_SHORT:
                 t = _serialize_short(tmpnode, &tmplen);
-                *(tmp + i) = t;
                 break;
             case MCNBT_TAG_INT:
                 t = _serialize_int(tmpnode, &tmplen);
-                *(tmp + i) = t;
                 break;
             case MCNBT_TAG_LONG:
                 t = _serialize_long(tmpnode, &tmplen);
-                *(tmp + i) = t;
                 break;
             case MCNBT_TAG_FLOAT:
                 t = _serialize_float(tmpnode, &tmplen);
-                *(tmp + i) = t;
                 break;
             case MCNBT_TAG_DOUBLE:
                 t = _serialize_double(tmpnode, &tmplen);
-                *(tmp + i) = t;
                 break;
             case MCNBT_TAG_BYTE_ARRAY:
                 t = _serialize_byte_array(tmpnode, &tmplen);
-                *(tmp + i) = t;
                 break;
             case MCNBT_TAG_STRING:
                 t = _serialize_string(tmpnode, &tmplen);
-                *(tmp + i) = t;
                 break;
             case MCNBT_TAG_LIST:
                 t = _serialize_list(tmpnode, &tmplen);
-                *(tmp + i) = t;
                 break;
             case MCNBT_TAG_COMPOUND:
                 t = _serialize_compound(tmpnode, &tmplen);
-                *(tmp + i) = t;
                 break;
             case MCNBT_TAG_INT_ARRAY:
                 t = _serialize_int_array(tmpnode, &tmplen);
-                *(tmp + i) = t;
                 break;
             case MCNBT_TAG_LONG_ARRAY:
                 t = _serialize_long_array(tmpnode, &tmplen);
-                *(tmp + i) = t;
                 break;
             default:
                 break;
         }
 
+        *(tmp + i) = t;
         sizes[i] = tmplen;
         content_len += tmplen;
         tmpnode = nbt_node_get_next_child(tmpnode);
@@ -681,56 +670,45 @@ static char *_serialize_compound(nbt_node_t *node, size_t *len) {
         switch (nbt_node_get_type(tmpnode)) {
             case MCNBT_TAG_BYTE:
                 t = _serialize_byte(tmpnode, &tmplen);
-                *(tmp + i) = t;
                 break;
             case MCNBT_TAG_SHORT:
                 t = _serialize_short(tmpnode, &tmplen);
-                *(tmp + i) = t;
                 break;
             case MCNBT_TAG_INT:
                 t = _serialize_int(tmpnode, &tmplen);
-                *(tmp + i) = t;
                 break;
             case MCNBT_TAG_LONG:
                 t = _serialize_long(tmpnode, &tmplen);
-                *(tmp + i) = t;
                 break;
             case MCNBT_TAG_FLOAT:
                 t = _serialize_float(tmpnode, &tmplen);
-                *(tmp + i) = t;
                 break;
             case MCNBT_TAG_DOUBLE:
                 t = _serialize_double(tmpnode, &tmplen);
-                *(tmp + i) = t;
                 break;
             case MCNBT_TAG_BYTE_ARRAY:
                 t = _serialize_byte_array(tmpnode, &tmplen);
-                *(tmp + i) = t;
                 break;
             case MCNBT_TAG_STRING:
                 t = _serialize_string(tmpnode, &tmplen);
-                *(tmp + i) = t;
                 break;
             case MCNBT_TAG_LIST:
                 t = _serialize_list(tmpnode, &tmplen);
-                *(tmp + i) = t;
                 break;
             case MCNBT_TAG_COMPOUND:
                 t = _serialize_compound(tmpnode, &tmplen);
-                *(tmp + i) = t;
                 break;
             case MCNBT_TAG_INT_ARRAY:
                 t = _serialize_int_array(tmpnode, &tmplen);
-                *(tmp + i) = t;
                 break;
             case MCNBT_TAG_LONG_ARRAY:
                 t = _serialize_long_array(tmpnode, &tmplen);
-                *(tmp + i) = t;
                 break;
             default:
                 break;
         }
 
+        *(tmp + i) = t;
         sizes[i] = tmplen;
         content_len += tmplen;
         tmpnode = nbt_node_get_next_child(tmpnode);
