@@ -63,18 +63,14 @@ nbt_node_t *nbt_initialize(void *data, size_t size) {
         return NULL;
     }
 
-    for (;;) {
-        s = archive_read_data(a, buf, sizeof(buf));
+    s = archive_read_data(a, buf, sizeof(buf));
 
-        if (s < 0) {
-            return NULL;
-        }
+    if (s < 0) {
+        return NULL;
+    }
 
-        if (s == 0) {
-            break;
-        }
-
-        break;
+    if (s == 0) {
+        return NULL;
     }
 
     archive_read_free(a);
