@@ -1,5 +1,5 @@
 /*
- *  serializer.h
+ *  serializer.c
  *
  *  Copyright (c) 2018 Mark Weiman <mark.weiman@markzz.com>
  *
