@@ -351,6 +351,12 @@ static void _strip_name(nbt_node_t *node) {
     }
 }
 
+static void _add_name(nbt_node_t *node) {
+    if (node->name == NULL) {
+        CALLOC(node->name, 1, sizeof(char), return);
+    }
+}
+
 int nbt_node_append_child(nbt_node_t *parent, nbt_node_t *child) {
     ASSERT(parent != NULL, return -1);
     ASSERT(child != NULL, return -1);
@@ -358,6 +364,10 @@ int nbt_node_append_child(nbt_node_t *parent, nbt_node_t *child) {
 
     if (parent->type == MCNBT_TAG_LIST) {
         _strip_name(child);
+    }
+
+    if (parent->type == MCNBT_TAG_COMPOUND) {
+        _add_name(child);
     }
 
     if (parent->first_child == NULL) {
