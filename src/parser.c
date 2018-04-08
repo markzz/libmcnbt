@@ -34,7 +34,7 @@ nbt_node_t *_nbt_parse_byte_array(void *data, size_t size, int *pos, int in_list
         name_len += (size_t)((char *) data)[*pos];
         *pos += 1;
 
-        name = (char *) malloc((name_len + 1) * sizeof(char));
+        MALLOC(name, (name_len + 1) * sizeof(char), return NULL);
         for (int i = *pos; i < *pos + name_len; i++) {
             *(name + i - *pos) = ((char *) data)[i];
         }
@@ -42,7 +42,7 @@ nbt_node_t *_nbt_parse_byte_array(void *data, size_t size, int *pos, int in_list
         *pos += name_len;
     }
 
-    stor = (char *) malloc(sizeof(char) * 4);
+    MALLOC(stor, sizeof(char) * 4, return NULL);
     for (int i = *pos; i < *pos + 4; i++) {
         *(stor + i - *pos) = ((char *) data)[i];
     }
@@ -54,7 +54,7 @@ nbt_node_t *_nbt_parse_byte_array(void *data, size_t size, int *pos, int in_list
     s += (*(stor + 3) & 255);
     FREE(stor);
 
-    stor = (char *) malloc(sizeof(char) * s);
+    MALLOC(stor, sizeof(char) * s, return NULL);
     for (int i = *pos; i < *pos + s; i++) {
         *(stor + i - *pos) = ((char *) data)[i];
     }
@@ -78,7 +78,7 @@ nbt_node_t *_nbt_parse_compound(void *data, size_t size, int *pos, int in_list) 
         name_len += (size_t)((char *) data)[*pos];
         *pos += 1;
 
-        name = (char *) malloc((name_len + 1) * sizeof(char));
+        MALLOC(name, (name_len + 1) * sizeof(char), return NULL);
         for (int i = *pos; i < *pos + name_len; i++) {
             *(name + i - *pos) = ((char *) data)[i];
         }
@@ -105,7 +105,7 @@ nbt_node_t *_nbt_parse_num(void *data, size_t size, int *pos, nbt_tag_type_t typ
         name_len += (size_t)((char *) data)[*pos];
         *pos += 1;
 
-        name = (char *) malloc((name_len + 1) * sizeof(char));
+        MALLOC(name, (name_len + 1) * sizeof(char), return NULL);
         for (int i = *pos; i < *pos + name_len; i++) {
             *(name + i - *pos) = ((char *) data)[i];
         }
@@ -133,27 +133,27 @@ nbt_node_t *_nbt_parse_num(void *data, size_t size, int *pos, nbt_tag_type_t typ
             break;
     }
 
-    stor = (char *) malloc(sizeof(char) * data_len);
+    MALLOC(stor, sizeof(char) * data_len, return NULL);
     for (int i = *pos; i < *pos + data_len; i++) {
         *(stor + i - *pos) = ((char *) data)[i];
     }
     *pos += data_len - 1;
 
     if (type == MCNBT_TAG_BYTE) {
-        edata = malloc(sizeof(char));
+        MALLOC(edata, sizeof(char), return NULL);
         *((char *) edata) = stor[0];
     } else if (type == MCNBT_TAG_SHORT) {
-        edata = malloc(sizeof(short));
+        MALLOC(edata, sizeof(short), return NULL);
         *((short *) edata) = (short) (((short) stor[0] & 255) << 8);
         *((short *) edata) += (short) stor[1] & 255;
     } else if (type == MCNBT_TAG_INT) {
-        edata = malloc(sizeof(int));
+        MALLOC(edata, sizeof(int), return NULL);
         *((int *) edata) = ((int) stor[0] & 255) << 24;
         *((int *) edata) += ((int) stor[1] & 255) << 16;
         *((int *) edata) += ((int) stor[2] & 255) << 8;
         *((int *) edata) += (int) stor[3] & 255;
     } else if (type == MCNBT_TAG_LONG) {
-        edata = malloc(sizeof(long));
+        MALLOC(edata, sizeof(long), return NULL);
         *((long *) edata) = ((long) stor[0] & 255) << 56;
         *((long *) edata) += ((long) stor[1] & 255) << 48;
         *((long *) edata) += ((long) stor[2] & 255) << 40;
@@ -163,13 +163,13 @@ nbt_node_t *_nbt_parse_num(void *data, size_t size, int *pos, nbt_tag_type_t typ
         *((long *) edata) += ((long) stor[6] & 255) << 8;
         *((long *) edata) += (long) stor[7] & 255;
     } else if (type == MCNBT_TAG_FLOAT) {
-        edata = malloc(sizeof(int));
+        MALLOC(edata, sizeof(int), return NULL);
         *((int *) edata) = ((int) stor[0] & 255) << 24;
         *((int *) edata) += ((int) stor[1] & 255) << 16;
         *((int *) edata) += ((int) stor[2] & 255) << 8;
         *((int *) edata) += (int) stor[3] & 255;
     } else if (type == MCNBT_TAG_DOUBLE) {
-        edata = malloc(sizeof(long));
+        MALLOC(edata, sizeof(long), return NULL);
         *((long *) edata) = ((long) stor[0] & 255) << 56;
         *((long *) edata) += ((long) stor[1] & 255) << 48;
         *((long *) edata) += ((long) stor[2] & 255) << 40;
@@ -207,7 +207,7 @@ nbt_node_t *_nbt_parse_list(void *data, size_t size, int *pos, int in_list) {
         name_len += (size_t)((char *) data)[*pos];
         *pos += 1;
 
-        name = (char *) malloc((name_len + 1) * sizeof(char));
+        MALLOC(name, (name_len + 1) * sizeof(char), return NULL);
         for (int i = *pos; i < *pos + name_len; i++) {
             *(name + i - *pos) = ((char *) data)[i];
         }
@@ -218,7 +218,7 @@ nbt_node_t *_nbt_parse_list(void *data, size_t size, int *pos, int in_list) {
     list_type = (nbt_tag_type_t)((char *) data)[*pos];
     *pos += 1;
 
-    stor = (char *) malloc(sizeof(char) * 4);
+    MALLOC(stor, sizeof(char) * 4, return NULL);
     for (int i = *pos; i < *pos + 4; i++) {
         *(stor + i - *pos) = ((char *) data)[i];
     }
@@ -272,7 +272,7 @@ nbt_node_t *_nbt_parse_string(void *data, size_t size, int *pos, int in_list) {
         name_len += (size_t)((char *) data)[*pos];
         *pos += 1;
 
-        name = (char *) malloc((name_len + 1) * sizeof(char));
+        MALLOC(name, (name_len + 1) * sizeof(char), return NULL);
         for (int i = *pos; i < *pos + name_len; i++) {
             *(name + i - *pos) = ((char *) data)[i];
         }
@@ -280,7 +280,7 @@ nbt_node_t *_nbt_parse_string(void *data, size_t size, int *pos, int in_list) {
         *pos += name_len;
     }
 
-    stor = (char *) malloc(sizeof(char) * 2);
+    MALLOC(stor, sizeof(char) * 2, return NULL);
     for (int i = *pos; i < *pos + 2; i++) {
         *(stor + i - *pos) = ((char *) data)[i];
     }
@@ -290,7 +290,7 @@ nbt_node_t *_nbt_parse_string(void *data, size_t size, int *pos, int in_list) {
     s += *(stor + 1) & 255;
     FREE(stor);
 
-    stor = (char *) malloc(sizeof(char) * (s + 1));
+    MALLOC(stor, sizeof(char) * (s + 1), return NULL);
     for (int i = *pos; i < *pos + s; i++) {
         *(stor + i - *pos) = ((char *) data)[i];
     }

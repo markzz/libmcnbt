@@ -82,12 +82,13 @@ nbt_node_t *nbt_node_initialize(nbt_tag_type_t type, const char *name, void *dat
 }
 
 nbt_node_t *nbt_node_initialize_len(nbt_tag_type_t type, const char *name, void *data, size_t data_size) {
-    nbt_node_t *ret = (nbt_node_t *) malloc(sizeof(nbt_node_t));
+    nbt_node_t *ret;
+    MALLOC(ret, sizeof(nbt_node_t), return NULL);
 
     ret->type = type;
 
     if (name != NULL) {
-        ret->name = (char *) calloc(strlen(name) + 1, sizeof(char));
+        CALLOC(ret->name, strlen(name) + 1, sizeof(char), return NULL);
         strcpy(ret->name, name);
     } else {
         ret->name = NULL;
@@ -113,12 +114,12 @@ nbt_node_t *nbt_node_initialize_len(nbt_tag_type_t type, const char *name, void 
             ret->data.d = *((double *) data);
             break;
         case MCNBT_TAG_BYTE_ARRAY:
-            ret->data.str = (char *) calloc(data_size, sizeof(char));
+            CALLOC(ret->data.str, data_size, sizeof(char), return NULL);
             memcpy(ret->data.str, (char *) data, data_size);
             ret->len = data_size;
             break;
         case MCNBT_TAG_STRING:
-            ret->data.str = (char *) calloc(strlen(data) + 1, sizeof(char));
+            CALLOC(ret->data.str, strlen(data) + 1, sizeof(char), return NULL);
             strncpy(ret->data.str, (char *) data, strlen(data) + 1);
             ret->len = strlen(ret->data.str);
             break;

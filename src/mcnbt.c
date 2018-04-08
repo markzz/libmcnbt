@@ -35,7 +35,7 @@ nbt_node_t *nbt_initialize_from_file(const char *filename) {
     file_size = ftell(fp);
     fseek(fp, 0, SEEK_SET);
 
-    buf = (char *) malloc((file_size + 1) * sizeof(char));
+    MALLOC(buf, (file_size + 1) * sizeof(char), return NULL);
     fread(buf, 1, (size_t) file_size, fp);
 
     ret = nbt_initialize(buf, (size_t) file_size);
