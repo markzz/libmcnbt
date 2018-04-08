@@ -21,7 +21,7 @@
 #include "mcnbt.h"
 #include "util.h"
 
-nbt_node_t *_nbt_parse_byte_array(void *data, size_t size, int *pos, int in_list) {
+static nbt_node_t *_nbt_parse_byte_array(void *data, int *pos, int in_list) {
     nbt_node_t *ret;
     char *name = NULL;
     size_t name_len;
@@ -67,7 +67,7 @@ nbt_node_t *_nbt_parse_byte_array(void *data, size_t size, int *pos, int in_list
     return ret;
 }
 
-nbt_node_t *_nbt_parse_compound(void *data, size_t size, int *pos, int in_list) {
+static nbt_node_t *_nbt_parse_compound(void *data, int *pos, int in_list) {
     nbt_node_t *ret;
     char *name = NULL;
     size_t name_len;
@@ -91,7 +91,7 @@ nbt_node_t *_nbt_parse_compound(void *data, size_t size, int *pos, int in_list) 
     return ret;
 }
 
-nbt_node_t *_nbt_parse_num(void *data, size_t size, int *pos, nbt_tag_type_t type, int in_list) {
+static nbt_node_t *_nbt_parse_num(void *data, int *pos, nbt_tag_type_t type, int in_list) {
     nbt_node_t *ret;
     char *name = NULL;
     char *stor;
@@ -190,9 +190,9 @@ nbt_node_t *_nbt_parse_num(void *data, size_t size, int *pos, nbt_tag_type_t typ
     return ret;
 }
 
-nbt_node_t *_nbt_parse_string(void *, size_t, int *, int);
+static nbt_node_t *_nbt_parse_string(void *, int *, int);
 
-nbt_node_t *_nbt_parse_list(void *data, size_t size, int *pos, int in_list) {
+static nbt_node_t *_nbt_parse_list(void *data, size_t size, int *pos, int in_list) {
     nbt_node_t *ret;
     char *name = NULL;
     size_t name_len;
@@ -235,19 +235,19 @@ nbt_node_t *_nbt_parse_list(void *data, size_t size, int *pos, int in_list) {
     for (int i = 0; i < num; i++) {
         if (list_type == MCNBT_TAG_BYTE || list_type == MCNBT_TAG_SHORT || list_type == MCNBT_TAG_INT ||
                 list_type == MCNBT_TAG_LONG || list_type == MCNBT_TAG_FLOAT || list_type == MCNBT_TAG_DOUBLE) {
-            child = _nbt_parse_num(data, size, pos, list_type, 1);
+            child = _nbt_parse_num(data, pos, list_type, 1);
             nbt_node_append_child(ret, child);
             (*pos)++;
         } else if (list_type == MCNBT_TAG_STRING) {
-            child = _nbt_parse_string(data, size, pos, 1);
+            child = _nbt_parse_string(data, pos, 1);
             nbt_node_append_child(ret, child);
             (*pos)++;
         } else if (list_type == MCNBT_TAG_BYTE_ARRAY) {
-            child = _nbt_parse_byte_array(data, size, pos, 1);
+            child = _nbt_parse_byte_array(data, pos, 1);
             nbt_node_append_child(ret, child);
             (*pos)++;
         } else if (list_type == MCNBT_TAG_COMPOUND) {
-            child = _nbt_parse_compound(data, size, pos, 1);
+            child = _nbt_parse_compound(data, pos, 1);
             child = _nbt_parse(data, size, child, pos);
             nbt_node_append_child(ret, child);
             (*pos)++;
@@ -259,7 +259,7 @@ nbt_node_t *_nbt_parse_list(void *data, size_t size, int *pos, int in_list) {
     return ret;
 }
 
-nbt_node_t *_nbt_parse_string(void *data, size_t size, int *pos, int in_list) {
+static nbt_node_t *_nbt_parse_string(void *data, int *pos, int in_list) {
     nbt_node_t *ret;
     char *name = NULL;
     size_t name_len;
@@ -340,15 +340,15 @@ nbt_node_t *_nbt_parse(void *data, size_t size, nbt_node_t *root, int *pos) {
             case MCNBT_TAG_LONG:
             case MCNBT_TAG_FLOAT:
             case MCNBT_TAG_DOUBLE:
-                tmp = _nbt_parse_num(data, size, &i, type, islist);
+                tmp = _nbt_parse_num(data, &i, type, islist);
                 nbt_node_append_child(current_parent, tmp);
                 break;
             case MCNBT_TAG_COMPOUND:
                 if (ret == NULL) {
-                    ret = _nbt_parse_compound(data, size, &i, islist);
+                    ret = _nbt_parse_compound(data, &i, islist);
                     current_parent = ret;
                 } else {
-                    tmp = _nbt_parse_compound(data, size, &i, islist);
+                    tmp = _nbt_parse_compound(data, &i, islist);
                     nbt_node_append_child(current_parent, tmp);
                     current_parent = tmp;
                 }
@@ -358,12 +358,12 @@ nbt_node_t *_nbt_parse(void *data, size_t size, nbt_node_t *root, int *pos) {
                 nbt_node_append_child(current_parent, tmp);
                 break;
             case MCNBT_TAG_BYTE_ARRAY:
-                tmp = _nbt_parse_byte_array(data, size, &i, islist);
+                tmp = _nbt_parse_byte_array(data, &i, islist);
                 nbt_node_append_child(current_parent, tmp);
                 i--;
                 break;
             case MCNBT_TAG_STRING:
-                tmp = _nbt_parse_string(data, size, &i, islist);
+                tmp = _nbt_parse_string(data, &i, islist);
                 nbt_node_append_child(current_parent, tmp);
                 break;
             case MCNBT_TAG_END:
