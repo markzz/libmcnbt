@@ -75,5 +75,5 @@ nbt_node_t *nbt_initialize(void *data, size_t size) {
 
     archive_read_free(a);
 
-    return _nbt_parse(buf, s, NULL, NULL);
+    return _nbt_parse(buf, (size_t) s, NULL, NULL);
 }
