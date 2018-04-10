@@ -18,6 +18,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <archive.h>
 #include <archive_entry.h>
 
@@ -76,4 +77,26 @@ nbt_node_t *nbt_initialize(void *data, size_t size) {
     archive_read_free(a);
 
     return _nbt_parse(buf, (size_t) s, NULL, NULL);
+}
+
+void nbt_write_tree(const char *filename, nbt_node_t *tree) {
+    struct archive *a;
+    struct archive_entry *ae;
+    size_t s;
+    char *serialized_tree = nbt_node_serialize(tree, &s);
+
+    a = archive_write_new();
+    archive_write_add_filter_gzip(a);
+    archive_write_set_format_raw(a);
+    archive_write_open_filename(a, filename);
+
+    ae = archive_entry_new();
+    archive_entry_set_filetype(ae, AE_IFREG);
+    archive_entry_set_size(ae, s);
+    archive_write_header(a, ae);
+    archive_write_data(a, serialized_tree, s);
+    archive_entry_free(ae);
+
+    archive_write_close(a);
+    archive_write_free(a);
 }
