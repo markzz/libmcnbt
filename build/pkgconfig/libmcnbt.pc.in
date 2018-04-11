@@ -1,0 +1,12 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: libmcnbt
+Description: library to manipulate Minecraft NBT files
+Version: @VERSION@
+Cflags: -I${includedir}
+Cflags.private: -DLIBMCNBT_STATIC
+Libs: -L${libdir} -lmcnbt
+Libs.private: @LIBS@
