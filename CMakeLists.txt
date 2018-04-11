@@ -32,9 +32,8 @@ option(ENABLE_INSTALL "Enable installing of libraries" ON)
 
 find_package(LibArchive 3.0 REQUIRED)
 
-include(CreatePkgConfigFile)
-
 set(ADDITIONAL_LIBS ${LibArchive_LIBRARIES})
+include(CreatePkgConfigFile)
 
 add_library(mcnbt SHARED src/mcnbt.c src/mcnbt.h src/tree.c src/tree.h src/util.c src/util.h src/parser.c src/walker.c src/serializer.c)
 target_link_libraries(mcnbt ${LibArchive_LIBRARIES})
