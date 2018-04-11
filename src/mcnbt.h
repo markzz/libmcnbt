@@ -25,6 +25,8 @@ extern "C" {
 
 #include <stdlib.h>
 
+#define MCNBT_VERSION_NUMBER 0001000
+
 typedef enum _tag_type_t {
     MCNBT_TAG_END,
     MCNBT_TAG_BYTE,
