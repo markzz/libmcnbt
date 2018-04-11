@@ -39,8 +39,8 @@ typedef enum _tag_type_t {
     MCNBT_TAG_STRING,
     MCNBT_TAG_LIST,
     MCNBT_TAG_COMPOUND,
-    MCNBT_TAG_INT_ARRAY,  /* unimplemented */
-    MCNBT_TAG_LONG_ARRAY, /* unimplemented */
+    MCNBT_TAG_INT_ARRAY,
+    MCNBT_TAG_LONG_ARRAY,
 } nbt_tag_type_t;
 
 typedef struct _nbt_node_t nbt_node_t;
